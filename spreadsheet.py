@@ -1,5 +1,4 @@
 import time
-import pygn
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 from profanity import profanity
