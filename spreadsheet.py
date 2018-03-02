@@ -1,5 +1,5 @@
 import time
-
+import pygn
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 from profanity import profanity
@@ -10,8 +10,6 @@ scope = ['https://spreadsheets.google.com/feeds']
 creds = ServiceAccountCredentials.from_json_keyfile_name(
     '/home/evanj/python/client_secret.json', scope)
 client = gspread.authorize(creds)
-
-# name = input('Enter setlist date to check (MM/DD/YY): ')
 
 # Open Setlist spreadsheet
 setlist = client.open("Setlist")
@@ -40,6 +38,7 @@ for s in range(len(setlist.worksheets())):
 
     # Check all songs in worksheet
     for i in range(len(songs)-1, 0, -1):
+
 
          # Update column 5
         if not str(sheet.cell(i+1, 5).value):
