@@ -28,7 +28,7 @@ for s in range(len(setlist.worksheets())):
 
     # Get current worksheet
     sheet = setlist.get_worksheet(s)
-    if str(sheet.cell(4, 7).value) == 'FALSE':
+    if str(sheet.cell(4, 7).value) == 'TRUE':
         continue
 
     # Get all tuples from sheet
@@ -39,8 +39,11 @@ for s in range(len(setlist.worksheets())):
     print 'Checking setlist ' + sheet.title
 
     # Check all songs in worksheet
-    i = 0
-    for i in range(len(songs)-1, 0, -1):
+    for i in range(len(songs)-1, 3, -1):
+
+        if not songs[i][0]:
+            continue
+
         updated = False
 
          # Update location
