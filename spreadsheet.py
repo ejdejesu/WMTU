@@ -21,6 +21,7 @@ setlist = client.open("Setlist")
 # begin timing
 start = time.time()
 
+# Number of songs updated
 count = 0
 
 # Check all worksheets
@@ -33,7 +34,7 @@ for s in range(len(setlist.worksheets())):
 
     # Get all tuples from sheet
     songs = sheet.get_all_values()
-    
+
     # Number of checked songs
 
     print 'Checking setlist ' + sheet.title
@@ -41,19 +42,21 @@ for s in range(len(setlist.worksheets())):
     # Check all songs in worksheet
     for i in range(len(songs)-1, 3, -1):
 
+        # If row is empty
         if not songs[i][0]:
             continue
 
+        # Determines if a song's info has been edited
         updated = False
 
-         # Update location
+        # Update location
         if not songs[i][5]:
             sheet.update_cell(i+1, 6, "not yet added")
             updated = True
 
+        # Song info from Columns 1 and 2
         artist = songs[i][0]
         track = songs[i][1]
-        contains = ""
 
         # Update genre
         if not songs[i][3]:
@@ -62,30 +65,35 @@ for s in range(len(setlist.worksheets())):
                 clientID=clientID, userID=userID, artist=str(artist), track=str(track))
             genres = metadata['genre']
             output = ""
+            # Add all three genres
             for j in range(len(genres)):
                 value = str(genres[str(j+1)]['TEXT'])
-                output += (value if value != 'Alternative & Punk' else 'Alternative') + (', ' if j<len(genres)-1 else "")
+                output += (value if value != 'Alternative & Punk' else 'Alternative') + \
+                    (', ' if j < len(genres)-1 else "")
             sheet.update_cell(i+1, 4, output)
 
         # Only check if status is not listed
         if not songs[i][4]:
             updated = True
 
+            # Profanity flag
+            contains = ""
+
             # Try to find lyrics and profanity level
             try:
                 lyrics = PyLyrics.getLyrics(artist, track)
-                contains = 'profane' if profanity.contains_profanity(
-                    lyrics) else 'clean'
+                contains = 'profane' if profanity.contains_profanity(lyrics) else 'clean'
                 print 'Song ' + str(i) + ' updated'
             except ValueError:
+                # Lyrics cannot be found
                 contains = "unknown"
-		print 'ERROR finding lyrics to ' + str(artist) + ' - ' + str(track)
+                print 'ERROR finding lyrics to ' + str(artist) + ' - ' + str(track)
 
             # Update column 5 of each song with profanity value
             sheet.update_cell(i+1, 5, contains)
 
         if updated:
-            count = count + 1
+            count += 1
 
 # end timing
 end = time.time()
