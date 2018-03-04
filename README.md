@@ -7,5 +7,5 @@ on 91.9 WMTU FM Houghton.
 
 Spreadsheet: https://docs.google.com/spreadsheets/d/1gHZGRVokEtPeTBweb-ru3b1WIjWBZCoy56QfjFVA3wg/edit?usp=sharing
 
-Python script that updates our setlist with profanity information and genre data.
+Python script that automatically updates our setlist with profanity information and genre data.
 Genre data provided by Gracenote.

@@ -8,12 +8,13 @@ from PyLyrics import *
 # use creds to create a client to interact with the Google Drive API
 scope = ['https://spreadsheets.google.com/feeds']
 creds = ServiceAccountCredentials.from_json_keyfile_name(
-    '/home/pi/setlist/client_secret.json', scope)
+    '/home/pi/WMTU/client_secret.json', scope)
 client = gspread.authorize(creds)
 
 # pygn info
-clientID = '29007503-98DC3B84B17D61D50C67122A6F46BD1E'
-userID = '51046582983290877-17F88B114B7ED6E2C1A777FC3777E703'
+gracenote_file = open("/home/pi/WMTU/gracenote.txt", 'r')
+clientID = gracenote_file.readline()
+userID = gracenote_file.readline(2)
 
 # Open Setlist spreadsheet
 setlist = client.open("Setlist")
@@ -49,10 +50,6 @@ for s in range(len(setlist.worksheets())):
         # Determines if a song's info has been edited
         updated = False
 
-        # Update location
-        if not songs[i][5]:
-            sheet.update_cell(i+1, 6, "not yet added")
-            updated = True
 
         # Song info from Columns 1 and 2
         artist = songs[i][0]
@@ -91,6 +88,11 @@ for s in range(len(setlist.worksheets())):
 
             # Update column 5 of each song with profanity value
             sheet.update_cell(i+1, 5, contains)
+
+        # Update location
+        if not songs[i][5]:
+            sheet.update_cell(i+1, 6, "not yet added")
+            updated = True
 
         if updated:
             count += 1
