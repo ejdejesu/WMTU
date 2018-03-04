@@ -8,13 +8,15 @@ from PyLyrics import *
 # use creds to create a client to interact with the Google Drive API
 scope = ['https://spreadsheets.google.com/feeds']
 creds = ServiceAccountCredentials.from_json_keyfile_name(
-    '/home/pi/WMTU/client_secret.json', scope)
+    '/home/evanj/WMTU/client_secret.json', scope)
 client = gspread.authorize(creds)
 
 # pygn info
-gracenote_file = open("/home/pi/WMTU/gracenote.txt", 'r')
-clientID = gracenote_file.readline()
-userID = gracenote_file.readline(2)
+gracenote_file = open("/home/evanj/WMTU/gracenote.txt", 'r')
+clientID = str(gracenote_file.readline()).rstrip('\n')
+userID = str(gracenote_file.readline()).rstrip('\n')
+
+print clientID, userID
 
 # Open Setlist spreadsheet
 setlist = client.open("Setlist")
@@ -58,16 +60,19 @@ for s in range(len(setlist.worksheets())):
         # Update genre
         if not songs[i][3]:
             updated = True
-            metadata = pygn.search(
-                clientID=clientID, userID=userID, artist=str(artist), track=str(track))
-            genres = metadata['genre']
-            output = ""
-            # Add all three genres
-            for j in range(len(genres)):
-                value = str(genres[str(j+1)]['TEXT'])
-                output += (value if value != 'Alternative & Punk' else 'Alternative') + \
-                    (', ' if j < len(genres)-1 else "")
-            sheet.update_cell(i+1, 4, output)
+            try:
+                metadata = pygn.search(
+                    clientID=clientID, userID=userID, artist=str(artist), track=str(track))
+                genres = metadata['genre']
+                output = ""
+                # Add all three genres
+                for j in range(len(genres)):
+                    value = str(genres[str(j+1)]['TEXT'])
+                    output += (value if value != 'Alternative & Punk' else 'Alternative') + \
+                        (', ' if j < len(genres)-1 else "")
+                sheet.update_cell(i+1, 4, output)
+            except TypeError:
+                sheet.update_cell(i+1, 4, "unknown")
 
         # Only check if status is not listed
         if not songs[i][4]:
