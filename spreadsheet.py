@@ -8,15 +8,13 @@ from PyLyrics import *
 # use creds to create a client to interact with the Google Drive API
 scope = ['https://spreadsheets.google.com/feeds']
 creds = ServiceAccountCredentials.from_json_keyfile_name(
-    '/home/evanj/WMTU/client_secret.json', scope)
+    'client_secret.json', scope)
 client = gspread.authorize(creds)
 
 # pygn info
-gracenote_file = open("/home/evanj/WMTU/gracenote.txt", 'r')
+gracenote_file = open("gracenote.txt", 'r')
 clientID = str(gracenote_file.readline()).rstrip('\n')
 userID = str(gracenote_file.readline()).rstrip('\n')
-
-print clientID, userID
 
 # Open Setlist spreadsheet
 setlist = client.open("Setlist")
